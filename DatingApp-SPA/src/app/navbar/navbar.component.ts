@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../_services/auth.service';
 import { tokenKey } from '@angular/core/src/view';
+import { AlertifyService } from '../_services/alertify.service';
 
 @Component({
   selector: 'app-navbar',
@@ -9,28 +10,27 @@ import { tokenKey } from '@angular/core/src/view';
 })
 export class NavbarComponent implements OnInit {
 model: any = {};
-  constructor(private authservice: AuthService) { }
+  constructor(public authservice: AuthService , private alertifyservice: AlertifyService) { }
 
   ngOnInit() {
   }
 
   login() {
     this.authservice.login(this.model).subscribe(next => {
-      console.log('logged in successful');
+      this.alertifyservice.success('logged in successful');
     },
     error => {
-      console.log('failed to login');
+      this.alertifyservice.error(error);
     }
     );
   }
   loggedin() {
-    const token = localStorage.getItem('token');
-    return !!token;
+   return this.authservice.loggedin();
   }
 
   loggedOut() {
        localStorage.removeItem('token');
-       console.log('logged out');
+       this.alertifyservice.message('logged out');
   }
 
 
